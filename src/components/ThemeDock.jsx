@@ -1,8 +1,16 @@
+import { motion } from 'framer-motion';
+
 function ThemeDock({ themes, selectedThemeName, onThemeChange }) {
   return (
-    <nav className="theme-dock glass-panel" aria-label="Theme dock">
+    <motion.nav
+      className="theme-dock glass-panel"
+      aria-label="Theme dock"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: 0.2 }}
+    >
       {themes.map((theme) => (
-        <button
+        <motion.button
           key={theme.name}
           className={`theme-dock__swatch ${theme.name === selectedThemeName ? 'is-active' : ''}`}
           type="button"
@@ -15,11 +23,14 @@ function ThemeDock({ themes, selectedThemeName, onThemeChange }) {
             '--swatch-button': theme.buttonColor,
             '--swatch-glass': theme.glassTint
           }}
+          whileHover={{ y: -3, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           <span aria-hidden="true">{theme.icon}</span>
-        </button>
+          <strong>{theme.label}</strong>
+        </motion.button>
       ))}
-    </nav>
+    </motion.nav>
   );
 }
 

@@ -1,30 +1,37 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { recordTimerSessionCompleted } from './useSessionHistory.js';
+import { readSettings, useSettings } from './useSettings.js';
+import { recordFocusSessionCompleted } from './useTodayStats.js';
 import { getStoredValue, setStoredValue } from '../utils/localStorage.js';
 
 const TIMER_STORAGE_KEY = 'mewcafe:pomodoroTimer';
 
-const MODES = {
-  focus: {
-    name: 'focus',
-    label: 'Focus',
-    duration: 25 * 60
-  },
-  shortBreak: {
-    name: 'shortBreak',
-    label: 'Short Break',
-    duration: 5 * 60
-  },
-  longBreak: {
-    name: 'longBreak',
-    label: 'Long Break',
-    duration: 15 * 60
-  }
-};
+function createModes(settings) {
+  return {
+    focus: {
+      name: 'focus',
+      label: 'Focus',
+      duration: settings.focusDuration * 60
+    },
+    shortBreak: {
+      name: 'shortBreak',
+      label: 'Short Break',
+      duration: settings.shortBreakDuration * 60
+    },
+    longBreak: {
+      name: 'longBreak',
+      label: 'Long Break',
+      duration: settings.longBreakDuration * 60
+    }
+  };
+}
+
+const defaultModes = createModes(readSettings());
 
 const defaultTimerState = {
   mode: 'focus',
   status: 'idle',
-  remainingSeconds: MODES.focus.duration,
+  remainingSeconds: defaultModes.focus.duration,
   completedFocusSessions: 0,
   lastStartedAt: null,
   updatedAt: Date.now()
@@ -38,35 +45,40 @@ function getNextMode(mode, completedFocusSessions) {
   return completedFocusSessions % 4 === 0 ? 'longBreak' : 'shortBreak';
 }
 
-function advanceSession(state) {
+function shouldAutoStart(nextMode, settings) {
+  return nextMode === 'focus' ? settings.autoStartFocus : settings.autoStartBreak;
+}
+
+function advanceSession(state, modes, settings) {
   const completedFocusSessions =
     state.mode === 'focus' ? state.completedFocusSessions + 1 : state.completedFocusSessions;
   const nextMode = getNextMode(state.mode, completedFocusSessions);
+  const shouldRunNextSession = shouldAutoStart(nextMode, settings);
 
   return {
     ...state,
     mode: nextMode,
-    status: 'running',
-    remainingSeconds: getInitialRemainingSeconds(nextMode),
+    status: shouldRunNextSession ? 'running' : 'idle',
+    remainingSeconds: getInitialRemainingSeconds(nextMode, modes),
     completedFocusSessions,
-    lastStartedAt: Date.now(),
+    lastStartedAt: shouldRunNextSession ? Date.now() : null,
     updatedAt: Date.now()
   };
 }
 
-function getInitialRemainingSeconds(mode) {
-  return MODES[mode].duration;
+function getInitialRemainingSeconds(mode, modes) {
+  return modes[mode].duration;
 }
 
-function normalizeState(savedState) {
-  if (!savedState || !MODES[savedState.mode]) {
+function normalizeState(savedState, modes, settings) {
+  if (!savedState || !modes[savedState.mode]) {
     return defaultTimerState;
   }
 
   let state = {
     ...defaultTimerState,
     ...savedState,
-    remainingSeconds: Number(savedState.remainingSeconds) || getInitialRemainingSeconds(savedState.mode),
+    remainingSeconds: Number(savedState.remainingSeconds) || getInitialRemainingSeconds(savedState.mode, modes),
     completedFocusSessions: Number(savedState.completedFocusSessions) || 0
   };
 
@@ -74,22 +86,46 @@ function normalizeState(savedState) {
     return state;
   }
 
-  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - Number(state.updatedAt || Date.now())) / 1000));
+  let completionCursor = Number(state.updatedAt || Date.now());
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - completionCursor) / 1000));
   let remainingElapsedSeconds = elapsedSeconds;
 
   while (remainingElapsedSeconds >= state.remainingSeconds) {
     remainingElapsedSeconds -= state.remainingSeconds;
 
+    const completedMode = modes[state.mode];
+    completionCursor += state.remainingSeconds * 1000;
+
     const completedFocusSessions =
       state.mode === 'focus' ? state.completedFocusSessions + 1 : state.completedFocusSessions;
     const nextMode = getNextMode(state.mode, completedFocusSessions);
+
+    if (state.mode === 'focus') {
+      recordFocusSessionCompleted(modes.focus.duration);
+    }
+
+    recordTimerSessionCompleted({
+      type: state.mode,
+      label: completedMode.label,
+      durationSeconds: completedMode.duration,
+      completedAt: completionCursor
+    });
 
     state = {
       ...state,
       mode: nextMode,
       completedFocusSessions,
-      remainingSeconds: getInitialRemainingSeconds(nextMode)
+      remainingSeconds: getInitialRemainingSeconds(nextMode, modes),
+      status: shouldAutoStart(nextMode, settings) ? 'running' : 'idle',
+      lastStartedAt: shouldAutoStart(nextMode, settings) ? completionCursor : null
     };
+
+    if (state.status !== 'running') {
+      return {
+        ...state,
+        updatedAt: Date.now()
+      };
+    }
   }
 
   return {
@@ -106,7 +142,11 @@ function formatTime(totalSeconds) {
   return `${minutes}:${seconds}`;
 }
 
-function requestNotificationPermission() {
+function requestNotificationPermission(settings) {
+  if (!settings.notificationsEnabled) {
+    return;
+  }
+
   if (!('Notification' in window) || Notification.permission !== 'default') {
     return;
   }
@@ -114,7 +154,11 @@ function requestNotificationPermission() {
   Notification.requestPermission().catch(() => {});
 }
 
-function showSessionNotification(modeLabel) {
+function showSessionNotification(modeLabel, settings) {
+  if (!settings.notificationsEnabled) {
+    return;
+  }
+
   if (!('Notification' in window) || Notification.permission !== 'granted') {
     return;
   }
@@ -125,7 +169,11 @@ function showSessionNotification(modeLabel) {
   });
 }
 
-function playAlertSound() {
+function playAlertSound(settings) {
+  if (!settings.soundEnabled) {
+    return;
+  }
+
   const audio = new Audio('/sounds/alert.mp3');
 
   audio.play().catch(() => {
@@ -170,26 +218,56 @@ function getMotivationalText(mode, status) {
 }
 
 export function usePomodoroTimer() {
+  const { settings } = useSettings();
+  const modes = useMemo(() => createModes(settings), [settings]);
   const [timerState, setTimerState] = useState(() =>
-    normalizeState(getStoredValue(TIMER_STORAGE_KEY, defaultTimerState))
+    normalizeState(getStoredValue(TIMER_STORAGE_KEY, defaultTimerState), defaultModes, readSettings())
   );
 
-  const currentMode = MODES[timerState.mode];
+  const currentMode = modes[timerState.mode];
   const totalSeconds = currentMode.duration;
   const elapsedSeconds = totalSeconds - timerState.remainingSeconds;
   const progress = totalSeconds === 0 ? 0 : elapsedSeconds / totalSeconds;
   const focusSessionNumber = (timerState.completedFocusSessions % 4) + 1;
 
-  const modeOptions = useMemo(() => Object.values(MODES), []);
+  const modeOptions = useMemo(() => Object.values(modes), [modes]);
 
   const completeSession = useCallback((state) => {
-    const completedMode = MODES[state.mode];
+    const completedMode = modes[state.mode];
 
-    showSessionNotification(completedMode.label);
-    playAlertSound();
+    if (state.mode === 'focus') {
+      recordFocusSessionCompleted(modes.focus.duration);
+    }
 
-    return advanceSession(state);
-  }, []);
+    recordTimerSessionCompleted({
+      type: state.mode,
+      label: completedMode.label,
+      durationSeconds: completedMode.duration
+    });
+
+    showSessionNotification(completedMode.label, settings);
+    playAlertSound(settings);
+
+    return advanceSession(state, modes, settings);
+  }, [modes, settings]);
+
+  useEffect(() => {
+    setTimerState((state) => {
+      if (!modes[state.mode]) {
+        return state;
+      }
+
+      if (state.status === 'running') {
+        return state;
+      }
+
+      return {
+        ...state,
+        remainingSeconds: getInitialRemainingSeconds(state.mode, modes),
+        updatedAt: Date.now()
+      };
+    });
+  }, [modes]);
 
   useEffect(() => {
     setStoredValue(TIMER_STORAGE_KEY, {
@@ -225,14 +303,14 @@ export function usePomodoroTimer() {
   }, [completeSession, timerState.status]);
 
   const start = useCallback(() => {
-    requestNotificationPermission();
+    requestNotificationPermission(settings);
     setTimerState((state) => ({
       ...state,
       status: 'running',
       lastStartedAt: Date.now(),
       updatedAt: Date.now()
     }));
-  }, []);
+  }, [settings]);
 
   const pause = useCallback(() => {
     setTimerState((state) => ({
@@ -243,31 +321,31 @@ export function usePomodoroTimer() {
   }, []);
 
   const resume = useCallback(() => {
-    requestNotificationPermission();
+    requestNotificationPermission(settings);
     setTimerState((state) => ({
       ...state,
       status: 'running',
       lastStartedAt: Date.now(),
       updatedAt: Date.now()
     }));
-  }, []);
+  }, [settings]);
 
   const reset = useCallback(() => {
     setTimerState((state) => ({
       ...state,
       status: 'idle',
-      remainingSeconds: getInitialRemainingSeconds(state.mode),
+      remainingSeconds: getInitialRemainingSeconds(state.mode, modes),
       lastStartedAt: null,
       updatedAt: Date.now()
     }));
-  }, []);
+  }, [modes]);
 
   const skip = useCallback(() => {
-    setTimerState((state) => advanceSession(state));
-  }, []);
+    setTimerState((state) => advanceSession(state, modes, settings));
+  }, [modes, settings]);
 
   const setMode = useCallback((mode) => {
-    if (!MODES[mode]) {
+    if (!modes[mode]) {
       return;
     }
 
@@ -275,11 +353,11 @@ export function usePomodoroTimer() {
       ...state,
       mode,
       status: 'idle',
-      remainingSeconds: getInitialRemainingSeconds(mode),
+      remainingSeconds: getInitialRemainingSeconds(mode, modes),
       lastStartedAt: null,
       updatedAt: Date.now()
     }));
-  }, []);
+  }, [modes]);
 
   return {
     mode: timerState.mode,

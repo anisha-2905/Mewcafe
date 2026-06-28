@@ -1,5 +1,10 @@
 import IconButton from './IconButton.jsx';
 
+const windowIcons = {
+  maximize: String.fromCharCode(0x25a1),
+  close: String.fromCharCode(0x00d7)
+};
+
 function TitleBar() {
   const controls = window.mewcafe?.windowControls;
 
@@ -12,10 +17,10 @@ function TitleBar() {
 
       <nav className="title-bar__actions" aria-label="Window controls">
         <IconButton label="Minimize" icon="-" onClick={() => controls?.minimize()} />
-        <IconButton label="Maximize" icon="□" onClick={() => controls?.maximize()} />
+        <IconButton label="Maximize" icon={windowIcons.maximize} onClick={() => controls?.maximize()} />
         <IconButton
           label="Close"
-          icon="×"
+          icon={windowIcons.close}
           className="icon-button--danger"
           onClick={() => controls?.close()}
         />

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { recordTaskCompletedToday } from '../hooks/useTodayStats.js';
 import { getStoredValue, setStoredValue } from '../utils/localStorage.js';
 
 const TASK_STORAGE_KEY = 'mewcafe:tasks';
@@ -74,11 +75,17 @@ function TaskPanel() {
   }
 
   function toggleTask(taskId) {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
+    setTasks((currentTasks) => {
+      const taskToToggle = currentTasks.find((task) => task.id === taskId);
+
+      if (taskToToggle && !taskToToggle.completed) {
+        recordTaskCompletedToday(taskId);
+      }
+
+      return currentTasks.map((task) =>
         task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
+      );
+    });
   }
 
   function deleteTask(taskId) {
@@ -211,7 +218,7 @@ function TaskPanel() {
                 aria-label="Delete task"
                 onClick={() => deleteTask(task.id)}
               >
-                ×
+                x
               </button>
             </li>
           ))}

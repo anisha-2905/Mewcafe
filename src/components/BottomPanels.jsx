@@ -1,17 +1,20 @@
-import BottomPanel from './BottomPanel.jsx';
+import { motion } from 'framer-motion';
+import SessionsPanel from './SessionsPanel.jsx';
+import StatsPanel from './StatsPanel.jsx';
 import TaskPanel from './TaskPanel.jsx';
 
 function BottomPanels() {
   return (
-    <div className="bottom-panels">
+    <motion.div
+      className="bottom-panels"
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
       <TaskPanel />
-      <BottomPanel title="Today">
-        <p>Daily overview</p>
-      </BottomPanel>
-      <BottomPanel title="Sessions">
-        <p>Session history</p>
-      </BottomPanel>
-    </div>
+      <StatsPanel />
+      <SessionsPanel />
+    </motion.div>
   );
 }
 

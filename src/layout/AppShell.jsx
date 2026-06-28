@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import BottomPanels from '../components/BottomPanels.jsx';
 import PomodoroCard from '../components/PomodoroCard.jsx';
+import SettingsPanel from '../components/SettingsPanel.jsx';
 import ThemeDock from '../components/ThemeDock.jsx';
 import TitleBar from '../components/TitleBar.jsx';
 import TopActions from '../components/TopActions.jsx';
@@ -13,6 +14,7 @@ function AppShell() {
   const [selectedThemeName, setSelectedThemeName] = useState(() =>
     getStoredValue(THEME_STORAGE_KEY, defaultThemeName)
   );
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [previousTheme, setPreviousTheme] = useState(null);
   const [isFadingPreviousTheme, setIsFadingPreviousTheme] = useState(false);
 
@@ -72,7 +74,7 @@ function AppShell() {
       </div>
       <TitleBar />
       <main className="app-shell" aria-label="MewCafe desktop layout">
-        <TopActions />
+        <TopActions theme={selectedTheme} onOpenSettings={() => setIsSettingsOpen(true)} />
         <PomodoroCard />
         <div className="app-shell__bottom">
           <BottomPanels />
@@ -83,6 +85,7 @@ function AppShell() {
           />
         </div>
       </main>
+      <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </div>
   );
 }
