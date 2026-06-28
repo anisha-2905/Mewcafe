@@ -1,0 +1,22 @@
+{
+  "name": "mewcafe",
+  "version": "0.1.0",
+  "description": "MewCafe Electron + React + Vite app shell.",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on tcp:5173 && electron .\""
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "electron": "^33.3.1",
+    "concurrently": "^9.1.2",
+    "wait-on": "^8.0.1"
+  },
+  "devDependencies": {}
+}
