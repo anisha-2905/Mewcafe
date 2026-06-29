@@ -50,7 +50,7 @@ function StatsPanel() {
   ];
 
   return (
-    <section className="bottom-panel stats-panel glass-panel" aria-label="Today stats">
+   <section className="bottom-panel stats-panel">
       <div className="stats-panel__header">
         <h2>Today</h2>
         <span>{stats.date}</span>

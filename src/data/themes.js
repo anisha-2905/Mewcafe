@@ -20,10 +20,6 @@ export const themes = [
     accentColor: '#ff92bd',
     buttonColor: '#ffd59a',
     glassTint: 'rgba(255, 213, 226, 0.24)',
-    cardGlass: 'rgba(42, 24, 36, 0.55)',
-    cardBlur: '18px',
-    cardBorder: 'rgba(255, 255, 255, 0.10)',
-    cardShadow: '0 18px 45px rgba(0, 0, 0, 0.30)',
     textColor: '#fff7ec',
     progressRingColor: '#ff9dbb'
   },
@@ -36,10 +32,6 @@ export const themes = [
     accentColor: '#8fc2cc',
     buttonColor: '#6f9aa5',
     glassTint: 'rgba(126, 162, 167, 0.24)',
-    cardGlass: 'rgba(28, 32, 36, 0.62)',
-    cardBlur: '20px',
-    cardBorder: 'rgba(255, 255, 255, 0.12)',
-    cardShadow: '0 20px 50px rgba(0, 0, 0, 0.40)',
     textColor: '#edf8f6',
     progressRingColor: '#9bd4dc'
   },
@@ -52,10 +44,6 @@ export const themes = [
     accentColor: '#f08a3c',
     buttonColor: '#c9672e',
     glassTint: 'rgba(219, 116, 45, 0.24)',
-    cardGlass: 'rgba(52, 32, 24, 0.56)',
-    cardBlur: '18px',
-    cardBorder: 'rgba(255, 255, 255, 0.10)',
-    cardShadow: '0 18px 45px rgba(0, 0, 0, 0.30)',
     textColor: '#fff1dd',
     progressRingColor: '#f6a24b'
   },
@@ -68,10 +56,6 @@ export const themes = [
     accentColor: '#f7c56b',
     buttonColor: '#8f4f62',
     glassTint: 'rgba(84, 70, 132, 0.28)',
-    cardGlass: 'rgba(24, 22, 38, 0.62)',
-    cardBlur: '20px',
-    cardBorder: 'rgba(255, 255, 255, 0.14)',
-    cardShadow: '0 22px 55px rgba(0, 0, 0, 0.42)',
     textColor: '#fff6e3',
     progressRingColor: '#ffd273'
   }
