@@ -21,7 +21,10 @@ export const themes = [
     buttonColor: '#ffd59a',
     glassTint: 'rgba(255, 213, 226, 0.24)',
     textColor: '#fff7ec',
-    progressRingColor: '#ff9dbb'
+    progressRingColor: '#ff9dbb',
+    panelBg: 'rgba(255, 213, 226, 0.30)',
+    panelBorder: 'rgba(255,255,255,0.18)',
+    inputBg: 'rgba(255,255,255,0.08)',
   },
   {
     name: 'rainy',
@@ -33,7 +36,10 @@ export const themes = [
     buttonColor: '#6f9aa5',
     glassTint: 'rgba(126, 162, 167, 0.24)',
     textColor: '#edf8f6',
-    progressRingColor: '#9bd4dc'
+    progressRingColor: '#9bd4dc',
+    panelBg: 'rgba(88,112,122,0.32)',
+    panelBorder: 'rgba(210,230,235,0.15)',
+    inputBg: 'rgba(255,255,255,0.07)',
   },
   {
     name: 'autumn',
@@ -45,7 +51,10 @@ export const themes = [
     buttonColor: '#c9672e',
     glassTint: 'rgba(219, 116, 45, 0.24)',
     textColor: '#fff1dd',
-    progressRingColor: '#f6a24b'
+    progressRingColor: '#f6a24b',
+    panelBg: 'rgba(140,82,46,0.30)',
+    panelBorder: 'rgba(255,230,180,0.15)',
+    inputBg: 'rgba(255,255,255,0.07)',
   },
   {
     name: 'christmas',
@@ -57,7 +66,10 @@ export const themes = [
     buttonColor: '#8f4f62',
     glassTint: 'rgba(84, 70, 132, 0.28)',
     textColor: '#fff6e3',
-    progressRingColor: '#ffd273'
+    progressRingColor: '#ffd273',
+    panelBg: 'rgba(84,70,132,0.30)',
+    panelBorder: 'rgba(255,230,245,0.16)',
+    inputBg: 'rgba(255,255,255,0.08)',
   }
 ];
 

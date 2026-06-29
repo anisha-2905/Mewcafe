@@ -118,7 +118,7 @@ function TaskPanel() {
   }
 
   return (
-    <section className="bottom-panel task-panel" aria-label="Tasks">
+    <section className="bottom-panel task-panel glass-panel" aria-label="Tasks">
       <div className="task-panel__header">
         <div>
           <h2>Tasks</h2>

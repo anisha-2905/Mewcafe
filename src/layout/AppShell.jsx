@@ -40,12 +40,16 @@ function AppShell() {
   }, [previousTheme]);
 
   const themeStyle = {
-    '--theme-accent': selectedTheme.accentColor,
-    '--theme-button': selectedTheme.buttonColor,
-    '--theme-glass-tint': selectedTheme.glassTint,
-    '--theme-text': selectedTheme.textColor,
-    '--theme-progress-ring': selectedTheme.progressRingColor,
-  };
+  '--theme-accent': selectedTheme.accentColor,
+  '--theme-button': selectedTheme.buttonColor,
+  '--theme-glass-tint': selectedTheme.glassTint,
+  '--theme-text': selectedTheme.textColor,
+  '--theme-progress-ring': selectedTheme.progressRingColor,
+
+  '--panel-bg': selectedTheme.panelBg,
+  '--panel-border': selectedTheme.panelBorder,
+  '--input-bg': selectedTheme.inputBg,
+};
 
   function handleThemeChange(themeName) {
     if (themeName === selectedTheme.name) {
