@@ -9,23 +9,7 @@ function PomodoroCard() {
       className="pomodoro-card"
       aria-label="Pomodoro timer"
       style={{ '--pomodoro-progress': `${timer.progressDegrees}deg` }}
-      animate={{ y: [0, -3, 0] }}
-      transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
     >
-      <div className="pomodoro-card__modes" aria-label="Timer modes">
-        {timer.modeOptions.map((mode) => (
-          <button
-            key={mode.name}
-            className={`pomodoro-card__mode ${mode.name === timer.mode ? 'is-active' : ''}`}
-            type="button"
-            aria-pressed={mode.name === timer.mode}
-            onClick={() => timer.setMode(mode.name)}
-          >
-            {mode.label}
-          </button>
-        ))}
-      </div>
-
       <motion.div
         className="pomodoro-card__timer glass-panel"
         initial={{ opacity: 0, scale: 0.94, y: 14 }}
@@ -37,68 +21,39 @@ function PomodoroCard() {
           <p className="pomodoro-card__mode-pill">
             <span aria-hidden="true" /> {timer.modeLabel}
           </p>
-          <p className="pomodoro-card__session">{timer.sessionLabel}</p>
           <div className="pomodoro-card__time">{timer.timeDisplay}</div>
           <p className="pomodoro-card__status">{timer.motivationalText}</p>
+          <p className="pomodoro-card__session">{timer.sessionLabel}</p>
         </div>
       </motion.div>
 
-      <motion.div
-        className="pomodoro-card__controls"
-        aria-label="Timer controls"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.12 }}
-      >
-        <motion.button
-          className="pomodoro-card__control"
-          type="button"
-          onClick={timer.start}
-          disabled={timer.status !== 'idle'}
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Start
-        </motion.button>
-        <motion.button
-          className="pomodoro-card__control"
-          type="button"
-          onClick={timer.pause}
-          disabled={timer.status !== 'running'}
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Pause
-        </motion.button>
-        <motion.button
-          className="pomodoro-card__control"
-          type="button"
-          onClick={timer.resume}
-          disabled={timer.status !== 'paused'}
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Resume
-        </motion.button>
-        <motion.button
-          className="pomodoro-card__control"
-          type="button"
-          onClick={timer.reset}
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
+      <div className="pomodoro-card__controls">
+        {timer.status === 'idle' && (
+          <button className="pomodoro-card__control is-primary" onClick={timer.start}>
+            Start
+          </button>
+        )}
+
+        {timer.status === 'running' && (
+          <button className="pomodoro-card__control is-primary" onClick={timer.pause}>
+            Pause
+          </button>
+        )}
+
+        {timer.status === 'paused' && (
+          <button className="pomodoro-card__control is-primary" onClick={timer.resume}>
+            Resume
+          </button>
+        )}
+
+        <button className="pomodoro-card__control" onClick={timer.reset}>
           Reset
-        </motion.button>
-        <motion.button
-          className="pomodoro-card__control"
-          type="button"
-          onClick={timer.skip}
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
+        </button>
+
+        <button className="pomodoro-card__control" onClick={timer.skip}>
           Skip
-        </motion.button>
-      </motion.div>
+        </button>
+      </div>
     </motion.section>
   );
 }

@@ -44,7 +44,11 @@ function AppShell() {
     '--theme-button': selectedTheme.buttonColor,
     '--theme-glass-tint': selectedTheme.glassTint,
     '--theme-text': selectedTheme.textColor,
-    '--theme-progress-ring': selectedTheme.progressRingColor
+    '--theme-progress-ring': selectedTheme.progressRingColor,
+    '--card-glass-bg': selectedTheme.cardGlass,
+    '--card-glass-blur': selectedTheme.cardBlur,
+    '--card-glass-border': selectedTheme.cardBorder,
+    '--card-glass-shadow': selectedTheme.cardShadow
   };
 
   function handleThemeChange(themeName) {

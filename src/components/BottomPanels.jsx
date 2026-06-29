@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import SessionsPanel from './SessionsPanel.jsx';
 import StatsPanel from './StatsPanel.jsx';
 import TaskPanel from './TaskPanel.jsx';
 
@@ -13,7 +12,6 @@ function BottomPanels() {
     >
       <TaskPanel />
       <StatsPanel />
-      <SessionsPanel />
     </motion.div>
   );
 }

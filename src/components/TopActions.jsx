@@ -7,7 +7,6 @@ const icons = {
   musicOff: String.fromCharCode(0x266a),
   muted: String.fromCodePoint(0x1f507),
   volume: String.fromCodePoint(0x1f50a),
-  stats: String.fromCharCode(0x25a5),
   settings: String.fromCharCode(0x2699)
 };
 
@@ -42,7 +41,6 @@ function TopActions({ theme, onOpenSettings }) {
         />
       </motion.div>
 
-      <IconButton label="Stats" icon={icons.stats} />
       <IconButton label="Settings" icon={icons.settings} onClick={onOpenSettings} />
     </div>
   );
