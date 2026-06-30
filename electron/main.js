@@ -12,6 +12,7 @@ function createWindow() {
     title: 'MewCafe',
     frame: false,
     titleBarStyle: 'hidden',
+    icon: path.join(__dirname, '../public/favicon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -27,6 +28,7 @@ function createWindow() {
   }
 
   mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+  mainWindow.webContents.openDevTools({ mode: 'detach' });
 }
 
 ipcMain.on('window:minimize', (event) => {
