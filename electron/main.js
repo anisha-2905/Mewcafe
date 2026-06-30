@@ -5,10 +5,11 @@ const isDev = !app.isPackaged;
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    minWidth: 1100,
-    minHeight: 700,
+    width: 1200,
+    height: 800,
+    minWidth: 900,
+    minHeight: 600,
+    center: true,
     title: 'MewCafe',
     frame: false,
     titleBarStyle: 'hidden',
