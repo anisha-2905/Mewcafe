@@ -50,7 +50,7 @@ function StatsPanel() {
   ];
 
   return (
-   <section className="bottom-panel stats-panel glass-panel">
+   <section className="bottom-panel stats-panel">
       <div className="stats-panel__header">
         <h2>Today</h2>
         <span>{stats.date}</span>
@@ -65,6 +65,11 @@ function StatsPanel() {
           </article>
         ))}
       </div>
+      <img
+        src="/icons/cat.png"
+        alt=""
+        className="stats-panel__cat"
+      />
     </section>
   );
 }
