@@ -90,6 +90,3 @@ release/
 ## developer
 
 Created by **Anisha Salaskar**
-
-```
-```
