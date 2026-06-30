@@ -11,7 +11,7 @@ function TitleBar() {
   return (
     <header className="title-bar">
       <div className="title-bar__brand">
-        <span className="title-bar__mark" aria-hidden="true">M</span>
+        <img src="./favicon.png" alt="" className="title-bar__icon" />
         <span>MewCafe</span>
       </div>
 

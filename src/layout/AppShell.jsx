@@ -77,7 +77,7 @@ function AppShell() {
         />
       </div>
       <TitleBar />
-      <main className="app-shell" aria-label="MewCafe desktop layout">
+        <main className="app-shell" aria-label="MewCafe desktop layout">
         <TopActions theme={selectedTheme} onOpenSettings={() => setIsSettingsOpen(true)} />
         <PomodoroCard />
         <div className="app-shell__bottom">

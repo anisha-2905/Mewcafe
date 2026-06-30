@@ -1,3 +1,4 @@
+import FocusHint from './FocusHint.jsx';
 import { motion } from 'framer-motion';
 import { usePomodoroTimer } from '../hooks/usePomodoroTimer.js';
 
@@ -10,6 +11,8 @@ function PomodoroCard() {
       aria-label="Pomodoro timer"
       style={{ '--pomodoro-progress': `${timer.progressDegrees}deg` }}
     >
+      <FocusHint mode={timer.mode} status={timer.status} />
+      
       <motion.div
         className="pomodoro-card__timer glass-panel"
         initial={{ opacity: 0, scale: 0.94, y: 14 }}
